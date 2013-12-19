@@ -84,7 +84,7 @@ and you would catch it in your function like this:
 	}
 
 ## Remove filters/actions
-You can easily remove filters/actions you or toher people have defined. All you need to know is hook, function name and priority.
+You can easily remove filters/actions you or other people have defined. All you need to know is hook, function name and priority.
 	
 	...
 
