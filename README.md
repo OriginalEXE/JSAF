@@ -49,7 +49,7 @@ No problem:
 
 	function append_random( text ) {
 
-		return name + " is your name!";
+		return text + " is your name!";
 
 	}
 
