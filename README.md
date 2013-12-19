@@ -2,3 +2,85 @@ JSAF
 ====
 
 javascript based actions/filters library inspired by WordPress
+
+## What?
+I am always happy when I use actions and filters in my WordPres projects, and I wanted that to be available in javascript too, so here it is.
+
+## Dependencies
+It requires jQuery. Yes, I could write it to work without jQuery, but I am lazy
+
+## How does it work
+Functionality is pretty similar to that of the WordPress actions/filters system. For those who are not familiar with it, I would suggest reading this to understand the difference between actions and filters: http://wp.tutsplus.com/tutorials/the-beginners-guide-to-wordpress-actions-and-filters/
+
+To sum up, with actions, you don't expect data to be modified or returned, you just want to execute certain functions when action is triggered. Filters on the other hand modify the passed data and return it.
+
+Basic action example:
+	function alert_the_name( name ) {
+
+		alert( name );
+
+	}
+
+	JSAF.add_action( 'trigger_name', 'alert_the_name' );
+
+	JSAF.do_action( 'trigger_name', [ 'Ante' ] );
+	// alerts "Ante"
+
+Basic filter example:
+	function append_surname( name ) {
+
+		return name + " Sepic";
+
+	}
+
+	JSAF.add_filter( 'full_name', 'append_surname' );
+
+	JSAF.apply_filters( 'full_name', [ 'Ante' ] );
+	// returns "Ante Sepic"
+
+Easy, right?
+
+## Priority
+Normally, actions/filters are executed in the order they are defined in. But what if we want to execute two actions/filters in custom order?
+
+No problem:
+	function append_random( text ) {
+
+		return name + " is your name!";
+
+	}
+
+	function append_surname( name ) {
+
+		return name + " Sepic";
+
+	}
+
+
+	JSAF.add_filter( 'full_name', 'append_random', 11 ); // we defined priority as "11", and since the default priority is 10, this filter will be applied after the one we are defining in the next line
+	JSAF.add_filter( 'full_name', 'append_surname' ); // as usual
+
+	JSAF.apply_filters( 'full_name', [ 'Ante' ] );
+	// returns "Ante Sepic is your name!"
+
+## Remove filters/actions
+You can easily remove filters/actions you or toher people have defined. All you need to know is hook, function name and priority.
+	
+	...
+
+	JSAF.remove_filter( 'full_name', 'append_surname', 10 ); // we could've just left out the priority here since it defaults to 10
+
+	JSAF.apply_filters( 'full_name', [ 'Ante' ] );
+	// returns "Ante is your name!"
+
+For actions, use `JSAF.remove_action` with the same markup
+
+## Can I use "OOP" with this?
+Sure you can, JSAF looks for functions in this order:
+
+1. If it detects "." in the function you passed, it splits the string to object.function, your object needs to be global
+2. If "." is not detected, it checks for JSAF.functions storage (which you can use if you don't want to create your objects or polute the global namespace)
+3. Finally it checks for globaly defined functions as displayed in the above example
+
+## Can I use it in commercial purposes?
+JSAF is licensed under MIT licence, which basically means you can do anything with it (please don't remove the link to this github page from the js source).
