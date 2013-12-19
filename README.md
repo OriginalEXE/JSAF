@@ -69,7 +69,7 @@ No problem:
 ## Passing variables
 It's very easy to pass variables to your functions
 
-Basically, what you do is (as a second parameter of apply_filters/do_action) specify array of values you are passing, and then in the function you catch them in the order you defiend them.
+Basically, what you do is (as a second parameter of apply_filters/do_action) specify array of values you are passing, and then in the function you catch them in the order you defined them.
 
 Example:
 
