@@ -66,6 +66,23 @@ No problem:
 	JSAF.apply_filters( 'full_name', [ 'Ante' ] );
 	// returns "Ante Sepic is your name!"
 
+## Passing variables
+It's very easy to pass variables to your functions
+
+Basically, what you do is (as a second parameter of apply_filters/do_action) specify array of values you are passing, and then in the function you catch them in the order you defiend them.
+
+Example:
+
+	JSAF.apply_filters( 'hook_name', [ 'Ante', 'Sepic', 'is my name' ] );
+
+and you would catch it in your function like this:
+
+	function random_string( name, surname, text ) {
+
+		return name + surname + text;
+
+	}
+
 ## Remove filters/actions
 You can easily remove filters/actions you or toher people have defined. All you need to know is hook, function name and priority.
 	
