@@ -15,6 +15,7 @@ Functionality is pretty similar to that of the WordPress actions/filters system.
 To sum up, with actions, you don't expect data to be modified or returned, you just want to execute certain functions when action is triggered. Filters on the other hand modify the passed data and return it.
 
 Basic action example:
+
 	function alert_the_name( name ) {
 
 		alert( name );
@@ -27,6 +28,7 @@ Basic action example:
 	// alerts "Ante"
 
 Basic filter example:
+
 	function append_surname( name ) {
 
 		return name + " Sepic";
@@ -44,6 +46,7 @@ Easy, right?
 Normally, actions/filters are executed in the order they are defined in. But what if we want to execute two actions/filters in custom order?
 
 No problem:
+
 	function append_random( text ) {
 
 		return name + " is your name!";
