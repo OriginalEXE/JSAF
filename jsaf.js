@@ -10,7 +10,7 @@ window.JSAF = {
 		priority = 'undefined' !== typeof priority ? String( priority ) : '10';
 		is_filter = 'undefined' !== typeof is_filter ? is_filter : false;
 
-		is_filter ? this.temp = this.filters : this.temp = this.actions;
+		this.temp = ( is_filter ? this.filters : this.actions );
 		
 		if ( 'undefined' === typeof this.temp[ hook ] ) {
 
@@ -26,7 +26,7 @@ window.JSAF = {
 
 		this.temp[ hook ][ priority ].push( user_function );
 
-		is_filter ? this.filters = this.temp : this.filters = this.temp;
+		is_filter ? this.filters = this.temp : this.actions = this.temp;
 		this.temp = null;
 
 	},
@@ -44,7 +44,7 @@ window.JSAF = {
 		priority = 'undefined' !== typeof priority ? String( priority ) : '10';
 		is_filter = 'undefined' !== typeof is_filter ? is_filter : false;
 
-		is_filter ? this.temp = this.filters : this.temp = this.actions;
+		this.temp = ( is_filter ? this.filters : this.actions );
 
 		if ( 'undefined' === typeof this.temp[ hook ] || 'undefined' === typeof this.temp[ hook ][ priority ] || -1 === jQuery.inArray( user_function, this.temp[ hook ][ priority ] ) ) {
 
@@ -58,7 +58,7 @@ window.JSAF = {
 
 		}
 
-		is_filter ? this.filters = this.temp : this.filters = this.temp;
+		is_filter ? this.filters = this.temp : this.actions = this.temp;
 		this.temp = null;
 
 		return removed;
@@ -81,7 +81,7 @@ window.JSAF = {
 		function_arguments = 'undefined' !== typeof function_arguments ? function_arguments : [];
 		is_filter = 'undefined' !== typeof is_filter ? is_filter : false;
 
-		is_filter ? this.temp = this.filters : this.temp = this.actions;
+		this.temp = ( is_filter ? this.filters : this.actions );
 
 		if ( is_filter && 'undefined' === typeof that.temp[ hook ] ) { // this hook is not used
 
