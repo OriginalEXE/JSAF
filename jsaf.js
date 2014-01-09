@@ -83,9 +83,15 @@ window.JSAF = {
 
 		this.temp = ( is_filter ? this.filters : this.actions );
 
-		if ( is_filter && 'undefined' === typeof that.temp[ hook ] ) { // this hook is not used
+		if ( 'undefined' === typeof that.temp[ hook ] ) { // this hook is not used
 
-			return false;
+			if ( is_filter ) {
+
+				return false;
+
+			}
+
+			return;
 
 		}
 
