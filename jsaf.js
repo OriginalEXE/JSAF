@@ -1,3 +1,9 @@
+/*!
+ * JSAF by OriginalEXE
+ * https://github.com/OriginalEXE/JSAF
+ * MIT licenced
+ */
+
 window.JSAF = {
 
 	actions: {}, // holds all actions
