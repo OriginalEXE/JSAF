@@ -7,7 +7,8 @@ javascript based actions/filters library inspired by WordPress
 I am always happy when I use actions and filters in my WordPres projects, and I wanted that to be available in javascript too, so here it is.
 
 ## Dependencies
-It requires jQuery. Yes, I could write it to work without jQuery, but I am lazy
+It requires jQuery. Yes, I could write it to work without jQuery, but I am lazy.
+Note: it should also work with Zepto.
 
 ## How does it work
 Functionality is pretty similar to that of the WordPress actions/filters system. For those who are not familiar with it, I would suggest reading this to understand the difference between actions and filters: http://wp.tutsplus.com/tutorials/the-beginners-guide-to-wordpress-actions-and-filters/
