@@ -93,7 +93,7 @@ window.JSAF = {
 
 			if ( is_filter ) {
 
-				return false;
+				return function_arguments[ 0 ];
 
 			}
 
