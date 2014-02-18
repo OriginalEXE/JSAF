@@ -162,14 +162,14 @@ window.JSAF = {
 			});
 
 		});
+		
+		this.temp = null;
 
 		if ( is_filter ) {
 
 			return function_arguments[ 0 ];
 
 		}
-
-		this.temp = null;
 
 	},
 
