@@ -167,6 +167,8 @@ window.JSAF = {
 
 		});
 
+		that.temp[ type ] = null;
+
 		if ( is_filter ) {
 
 			return function_arguments[ 0 ];
