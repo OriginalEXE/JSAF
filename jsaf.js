@@ -84,12 +84,16 @@ window.JSAF = {
 		var that = this,
 			priority_sorted = [];
 
+		that.temp = that.temp || {};
+
 		function_arguments = 'undefined' !== typeof function_arguments ? function_arguments : [];
 		is_filter = 'undefined' !== typeof is_filter ? is_filter : false;
 
-		this.temp = ( is_filter ? this.filters : this.actions );
+		var type = ( is_filter ) ? 'filters' : 'actions';
 
-		if ( 'undefined' === typeof that.temp[ hook ] ) { // this hook is not used
+		that.temp[ type ] = that.temp[ type ] || ( is_filter ) ? that.filters : that.actions;
+
+		if ( 'undefined' === typeof that.temp[ type ][ hook ] ) { // this hook is not used
 
 			if ( is_filter ) {
 
@@ -101,7 +105,7 @@ window.JSAF = {
 
 		}
 
-		jQuery.each( that.temp[ hook ], function( priority, user_functions ) {
+		jQuery.each( that.temp[ type ][ hook ], function( priority, user_functions ) {
 
 			priority_sorted.push( Number( priority ) );
 
@@ -115,7 +119,7 @@ window.JSAF = {
 
 		jQuery.each( priority_sorted, function( index, priority ) {
 
-			jQuery.each( that.temp[ hook ][ priority ], function( index, user_function ) {
+			jQuery.each( that.temp[ type ][ hook ][ priority ], function( index, user_function ) {
 
 				if ( user_function.indexOf( '.' ) > -1 ) { // it's a user defined object
 
@@ -162,8 +166,6 @@ window.JSAF = {
 			});
 
 		});
-		
-		this.temp = null;
 
 		if ( is_filter ) {
 
