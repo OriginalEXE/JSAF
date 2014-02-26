@@ -9,63 +9,62 @@ window.JSAF = {
 	actions: {}, // holds all actions
 	filters: {}, // holds all filters
 	functions: {}, // holds all functions
-	temp: {}, // will hold actions or filters but only temporary
 
-	add_action: function( hook, user_function, priority, is_filter ) {
+	add_action: function( hook, user_function, priority ) {
 
 		priority = 'undefined' !== typeof priority ? String( priority ) : '10';
-		is_filter = 'undefined' !== typeof is_filter ? is_filter : false;
-
-		this.temp = ( is_filter ? this.filters : this.actions );
 		
-		if ( 'undefined' === typeof this.temp[ hook ] ) {
+		if ( 'undefined' === typeof this.actions[ hook ] ) {
 
-			this.temp[ hook ] = {};
-
-		}
-
-		if ( 'undefined' === typeof this.temp[ hook ][ priority ] ) {
-
-			this.temp[ hook ][ priority ] = [];
+			this.actions[ hook ] = {};
 
 		}
 
-		this.temp[ hook ][ priority ].push( user_function );
+		if ( 'undefined' === typeof this.actions[ hook ][ priority ] ) {
 
-		is_filter ? this.filters = this.temp : this.actions = this.temp;
-		this.temp = null;
+			this.actions[ hook ][ priority ] = [];
+
+		}
+
+		this.actions[ hook ][ priority ].push( user_function );
 
 	},
 
 	add_filter: function( hook, user_function, priority ) {
 
 		priority = 'undefined' !== typeof priority ? String( priority ) : '10';
+		
+		if ( 'undefined' === typeof this.filters[ hook ] ) {
 
-		this.add_action( hook, user_function, priority, true );
+			this.filters[ hook ] = {};
+
+		}
+
+		if ( 'undefined' === typeof this.filters[ hook ][ priority ] ) {
+
+			this.filters[ hook ][ priority ] = [];
+
+		}
+
+		this.filters[ hook ][ priority ].push( user_function );
 
 	},
 
-	remove_action: function( hook, user_function, priority, is_filter ) {
+	remove_action: function( hook, user_function, priority ) {
 
 		priority = 'undefined' !== typeof priority ? String( priority ) : '10';
-		is_filter = 'undefined' !== typeof is_filter ? is_filter : false;
 
-		this.temp = ( is_filter ? this.filters : this.actions );
-
-		if ( 'undefined' === typeof this.temp[ hook ] || 'undefined' === typeof this.temp[ hook ][ priority ] || -1 === jQuery.inArray( user_function, this.temp[ hook ][ priority ] ) ) {
+		if ( 'undefined' === typeof this.actions[ hook ] || 'undefined' === typeof this.actions[ hook ][ priority ] || -1 === jQuery.inArray( user_function, this.actions[ hook ][ priority ] ) ) {
 
 			var removed = false;
 
 		} else {
 
-			this.temp[ hook ][ priority ].splice( jQuery.inArray( user_function, this.temp[ hook ][ priority ] ), 1 );
+			this.actions[ hook ][ priority ].splice( jQuery.inArray( user_function, this.actions[ hook ][ priority ] ), 1 );
 
 			var removed = true;
 
 		}
-
-		is_filter ? this.filters = this.temp : this.actions = this.temp;
-		this.temp = null;
 
 		return removed;
 
@@ -75,37 +74,36 @@ window.JSAF = {
 
 		priority = 'undefined' !== typeof priority ? String( priority ) : '10';
 
-		this.remove_action( hook, user_function, priority, true );
+		if ( 'undefined' === typeof this.filters[ hook ] || 'undefined' === typeof this.filters[ hook ][ priority ] || -1 === jQuery.inArray( user_function, this.filters[ hook ][ priority ] ) ) {
+
+			var removed = false;
+
+		} else {
+
+			this.filters[ hook ][ priority ].splice( jQuery.inArray( user_function, this.filters[ hook ][ priority ] ), 1 );
+
+			var removed = true;
+
+		}
+
+		return removed;
 
 	},
 
-	do_action: function( hook, function_arguments, is_filter ) {
+	do_action: function( hook, function_arguments ) {
 
-		var that = this,
+		var that            = this,
 			priority_sorted = [];
 
-		that.temp = that.temp || {};
-
 		function_arguments = 'undefined' !== typeof function_arguments ? function_arguments : [];
-		is_filter = 'undefined' !== typeof is_filter ? is_filter : false;
 
-		var type = ( is_filter ) ? 'filters' : 'actions';
-
-		that.temp[ type ] = that.temp[ type ] || ( is_filter ) ? that.filters : that.actions;
-
-		if ( 'undefined' === typeof that.temp[ type ][ hook ] ) { // this hook is not used
-
-			if ( is_filter ) {
-
-				return function_arguments[ 0 ];
-
-			}
+		if ( 'undefined' === typeof that.actions[ hook ] ) { // this hook is not used
 
 			return;
 
 		}
 
-		jQuery.each( that.temp[ type ][ hook ], function( priority, user_functions ) {
+		jQuery.each( that.actions[ hook ], function( priority, user_functions ) {
 
 			priority_sorted.push( Number( priority ) );
 
@@ -119,47 +117,23 @@ window.JSAF = {
 
 		jQuery.each( priority_sorted, function( index, priority ) {
 
-			jQuery.each( that.temp[ type ][ hook ][ priority ], function( index, user_function ) {
+			jQuery.each( that.actions[ hook ][ priority ], function( index, user_function ) {
 
 				if ( user_function.indexOf( '.' ) > -1 ) { // it's a user defined object
 
-					var split = user_function.split( '.' ),
+					var split  = user_function.split( '.' ),
 						object = split[0],
-						fn = split[1];
+						fn     = split[1];
 
-					if ( is_filter ) {
-
-						function_arguments[ 0 ] = window[ object ][ fn ].apply( null, function_arguments );
-
-					} else {
-
-						window[ object ][ fn ].apply( null, function_arguments );
-
-					}
+					window[ object ][ fn ].apply( null, function_arguments );
 
 				} else if ( 'function' === typeof that.functions[ user_function ] ) { // part of our object
 
-					if ( is_filter ) {
-
-						function_arguments[ 0 ] = that.functions[ user_function ].apply( null, function_arguments );
-
-					} else {
-
-						that.functions[ user_function ].apply( null, function_arguments );
-
-					}
+					that.functions[ user_function ].apply( null, function_arguments );
 
 				} else if ( 'function' === typeof window[ user_function ] ) { // global function
 
-					if ( is_filter ) {
-
-						function_arguments[ 0 ] =  window[ user_function ].apply( null, function_arguments );
-
-					} else {
-
-						window[ user_function ].apply( null, function_arguments );
-
-					}
+					window[ user_function ].apply( null, function_arguments );
 
 				}
 
@@ -167,21 +141,60 @@ window.JSAF = {
 
 		});
 
-		that.temp[ type ] = null;
+	},
 
-		if ( is_filter ) {
+	apply_filters: function( hook, function_arguments ) {
+
+		var that            = this,
+			priority_sorted = [];
+
+		function_arguments = 'undefined' !== typeof function_arguments ? function_arguments : [];
+
+		if ( 'undefined' === typeof that.filters[ hook ] ) { // this hook is not used
 
 			return function_arguments[ 0 ];
 
 		}
 
-	},
+		jQuery.each( that.filters[ hook ], function( priority, user_functions ) {
 
-	apply_filters: function( hook, function_arguments ) {
+			priority_sorted.push( Number( priority ) );
 
-		function_arguments = 'undefined' !== typeof function_arguments ? function_arguments : [];
+		});
 
-		return this.do_action( hook, function_arguments, true );
+		priority_sorted.sort( function( a, b ) { // sort priority array
+
+			return a - b;
+
+		});
+
+		jQuery.each( priority_sorted, function( index, priority ) {
+
+			jQuery.each( that.filters[ hook ][ priority ], function( index, user_function ) {
+
+				if ( user_function.indexOf( '.' ) > -1 ) { // it's a user defined object
+
+					var split  = user_function.split( '.' ),
+						object = split[0],
+						fn     = split[1];
+
+					function_arguments[ 0 ] = window[ object ][ fn ].apply( null, function_arguments );
+
+				} else if ( 'function' === typeof that.functions[ user_function ] ) { // part of our object
+
+					function_arguments[ 0 ] = that.functions[ user_function ].apply( null, function_arguments );
+
+				} else if ( 'function' === typeof window[ user_function ] ) { // global function
+
+					function_arguments[ 0 ] =  window[ user_function ].apply( null, function_arguments );
+
+				}
+
+			});
+
+		});
+
+		return function_arguments[ 0 ];
 
 	}
 
