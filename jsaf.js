@@ -125,15 +125,15 @@ window.JSAF = {
 						object = split[0],
 						fn     = split[1];
 
-					window[ object ][ fn ].apply( null, function_arguments );
+					window[ object ][ fn ].apply( null, [ function_arguments ] );
 
 				} else if ( 'function' === typeof that.functions[ user_function ] ) { // part of our object
 
-					that.functions[ user_function ].apply( null, function_arguments );
+					that.functions[ user_function ].apply( null, [ function_arguments ] );
 
 				} else if ( 'function' === typeof window[ user_function ] ) { // global function
 
-					window[ user_function ].apply( null, function_arguments );
+					window[ user_function ].apply( null, [ function_arguments ] );
 
 				}
 
@@ -178,15 +178,15 @@ window.JSAF = {
 						object = split[0],
 						fn     = split[1];
 
-					function_arguments[ 0 ] = window[ object ][ fn ].apply( null, function_arguments );
+					function_arguments[ 0 ] = window[ object ][ fn ].apply( null, [ function_arguments ] );
 
 				} else if ( 'function' === typeof that.functions[ user_function ] ) { // part of our object
 
-					function_arguments[ 0 ] = that.functions[ user_function ].apply( null, function_arguments );
+					function_arguments[ 0 ] = that.functions[ user_function ].apply( null, [ function_arguments ] );
 
 				} else if ( 'function' === typeof window[ user_function ] ) { // global function
 
-					function_arguments[ 0 ] =  window[ user_function ].apply( null, function_arguments );
+					function_arguments[ 0 ] =  window[ user_function ].apply( null, [ function_arguments ] );
 
 				}
 
