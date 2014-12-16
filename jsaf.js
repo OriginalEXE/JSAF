@@ -119,21 +119,9 @@ window.JSAF = {
 
 			jQuery.each( that.actions[ hook ][ priority ], function( index, user_function ) {
 
-				if ( user_function.indexOf( '.' ) > -1 ) { // it's a user defined object
+				if ( 'function' === typeof user_function ) {
 
-					var split  = user_function.split( '.' ),
-						object = split[0],
-						fn     = split[1];
-
-					window[ object ][ fn ].apply( null, function_arguments );
-
-				} else if ( 'function' === typeof that.functions[ user_function ] ) { // part of our object
-
-					that.functions[ user_function ].apply( null, function_arguments );
-
-				} else if ( 'function' === typeof window[ user_function ] ) { // global function
-
-					window[ user_function ].apply( null, function_arguments );
+					user_function.apply( null, function_arguments );
 
 				}
 
@@ -172,21 +160,9 @@ window.JSAF = {
 
 			jQuery.each( that.filters[ hook ][ priority ], function( index, user_function ) {
 
-				if ( user_function.indexOf( '.' ) > -1 ) { // it's a user defined object
+				if ( 'function' === typeof user_function ) {
 
-					var split  = user_function.split( '.' ),
-						object = split[0],
-						fn     = split[1];
-
-					function_arguments[ 0 ] = window[ object ][ fn ].apply( null, function_arguments );
-
-				} else if ( 'function' === typeof that.functions[ user_function ] ) { // part of our object
-
-					function_arguments[ 0 ] = that.functions[ user_function ].apply( null, function_arguments );
-
-				} else if ( 'function' === typeof window[ user_function ] ) { // global function
-
-					function_arguments[ 0 ] =  window[ user_function ].apply( null, function_arguments );
+					user_function.apply( null, function_arguments );
 
 				}
 
