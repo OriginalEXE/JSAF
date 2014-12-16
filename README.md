@@ -96,12 +96,5 @@ You can easily remove filters/actions you or other people have defined. All you 
 
 For actions, use `JSAF.remove_action` with the same markup
 
-## Can I use "OOP" with this?
-Sure you can, JSAF looks for functions in this order:
-
-1. If it detects "." in the function you passed, it splits the string to object.function, your object needs to be global
-2. If "." is not detected, it checks for JSAF.functions storage (which you can use if you don't want to create your objects or polute the global namespace)
-3. Finally it checks for globaly defined functions as displayed in the above example
-
 ## Can I use it in commercial purposes?
 JSAF is licensed under MIT licence, which basically means you can do anything with it (please don't remove the link to this github page from the js source).
