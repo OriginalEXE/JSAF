@@ -98,3 +98,6 @@ For actions, use `JSAF.remove_action` with the same markup
 
 ## Can I use it in commercial purposes?
 JSAF is licensed under MIT licence, which basically means you can do anything with it (please don't remove the link to this github page from the js source).
+
+## To-Do
+Remove jQuery/Zepto dependency.
