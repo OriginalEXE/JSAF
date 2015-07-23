@@ -4,7 +4,7 @@ JSAF
 javascript based actions/filters library inspired by WordPress
 
 ## What?
-I often work with WordPress as a developer and I love that it has actions/filters, they are very useful. Hence, I decided to make the same functionality available in my JS apps too.
+I often work with WordPress as a developer and I love that it has actions/filters, they are very useful; hence, I decided to make the same functionality available in my JS apps too.
 
 ## Dependencies
 It requires jQuery or Zepto. Yes, I could write it to work without jQuery, but $.map() is sooo handy :).
