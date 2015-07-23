@@ -213,7 +213,7 @@
 
 					if ( 'function' === typeof filter.callback ) {
 
-						filter.callback.apply( filter.context, function_arguments );
+						function_arguments[ 0 ] = filter.callback.apply( filter.context, function_arguments );
 
 					}
 

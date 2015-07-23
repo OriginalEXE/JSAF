@@ -22,7 +22,7 @@ Basic action example:
 
 	}
 
-	JSAF.add_action( 'trigger_name', 'alert_the_name' );
+	JSAF.add_action( 'trigger_name', alert_the_name );
 
 	JSAF.do_action( 'trigger_name', [ 'Ante' ] );
 	// alerts "Ante"
@@ -35,7 +35,7 @@ Basic filter example:
 
 	}
 
-	JSAF.add_filter( 'full_name', 'append_surname' );
+	JSAF.add_filter( 'full_name', append_surname );
 
 	JSAF.apply_filters( 'full_name', [ 'Ante' ] );
 	// returns "Ante Sepic"
@@ -60,8 +60,8 @@ No problem:
 	}
 
 
-	JSAF.add_filter( 'full_name', 'append_random', 11 ); // we defined priority as "11", and since the default priority is 10, this filter will be applied after the one we are defining in the next line
-	JSAF.add_filter( 'full_name', 'append_surname' ); // as usual
+	JSAF.add_filter( 'full_name', append_random, 11 ); // we defined priority as "11", and since the default priority is 10, this filter will be applied after the one we are defining in the next line
+	JSAF.add_filter( 'full_name', append_surname ); // as usual
 
 	JSAF.apply_filters( 'full_name', [ 'Ante' ] );
 	// returns "Ante Sepic is your name!"
@@ -105,7 +105,7 @@ You can easily remove filters/actions you or other people have defined. All you 
 	
 	...
 
-	JSAF.remove_filter( 'full_name', 'append_surname', 10 ); // we could've just left out the priority here since it defaults to 10
+	JSAF.remove_filter( 'full_name', append_surname, 10 ); // we could've just left out the priority here since it defaults to 10
 
 	JSAF.apply_filters( 'full_name', [ 'Ante' ] );
 	// returns "Ante is your name!"
