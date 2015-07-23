@@ -4,16 +4,15 @@ JSAF
 javascript based actions/filters library inspired by WordPress
 
 ## What?
-I am always happy when I use actions and filters in my WordPres projects, and I wanted that to be available in javascript too, so here it is.
+I love how WordPress has actions/filters, they are very useful, and I wanted to make that available in my JS apps too.
 
 ## Dependencies
-It requires jQuery. Yes, I could write it to work without jQuery, but I am lazy.
-Note: it should also work with Zepto.
+It requires jQuery or Zepto. Yes, I could write it to work without jQuery, but $.map() is sooo handy :).
 
 ## How does it work
 Functionality is pretty similar to that of the WordPress actions/filters system. For those who are not familiar with it, I would suggest reading this to understand the difference between actions and filters: http://wp.tutsplus.com/tutorials/the-beginners-guide-to-wordpress-actions-and-filters/
 
-To sum up, with actions, you don't expect data to be modified or returned, you just want to execute certain functions when action is triggered. Filters on the other hand modify the passed data and return it.
+To sum up, with actions, you don't expect data to be modified or returned, you just want to execute certain functions when action is triggered (like events). Filters on the other hand modify the passed data and return it.
 
 Basic action example:
 
@@ -84,6 +83,23 @@ and you would catch it in your function like this:
 
 	}
 
+## Specifying context
+Aaah, the infamous `this`. You can set what `this` wil be inside your function by passing it as a fourth parameter of the add_action/add_filter:
+
+	var person = {
+		name: 'Ante',
+		shoutMyName: function() {
+
+			alert( this.name );
+
+		}
+	}
+
+	JSAF.add_action( 'shout_names', person.shoutMyName, 10, person );
+
+	JSAF.do_action( 'shout_names' );
+	// alerts "Ante"
+
 ## Remove filters/actions
 You can easily remove filters/actions you or other people have defined. All you need to know is hook, function name and priority.
 	
@@ -94,10 +110,7 @@ You can easily remove filters/actions you or other people have defined. All you 
 	JSAF.apply_filters( 'full_name', [ 'Ante' ] );
 	// returns "Ante is your name!"
 
-For actions, use `JSAF.remove_action` with the same markup
+For actions, use `JSAF.remove_action` with the same signature
 
 ## Can I use it in commercial purposes?
-JSAF is licensed under MIT licence, which basically means you can do anything with it (please don't remove the link to this github page from the js source).
-
-## To-Do
-Remove jQuery/Zepto dependency.
+JSAF is licensed under MIT licence, which basically means you can do anything with it (I would appreciate it if you didn't remove the link to this github page from the js source).
