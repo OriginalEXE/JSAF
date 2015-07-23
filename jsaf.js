@@ -4,174 +4,227 @@
  * MIT licenced
  */
 
-window.JSAF = {
++( function( $ ) {
 
-	actions: {}, // holds all actions
-	filters: {}, // holds all filters
-	functions: {}, // holds all functions
+	window.JSAF = {
 
-	add_action: function( hook, user_function, priority ) {
+		actions: {}, // holds all actions
+		filters: {}, // holds all filters
 
-		priority = 'undefined' !== typeof priority ? String( priority ) : '10';
-		
-		if ( 'undefined' === typeof this.actions[ hook ] ) {
+		add_action: function( hook, user_function, priority, context ) {
 
-			this.actions[ hook ] = {};
+			priority = 'undefined' !== typeof priority ? String( priority ) : '10';
+			context = 'undefined' !== typeof context ? context : window;
+			
+			if ( 'undefined' === typeof this.actions[ hook ] ) {
 
-		}
+				this.actions[ hook ] = {};
 
-		if ( 'undefined' === typeof this.actions[ hook ][ priority ] ) {
+			}
 
-			this.actions[ hook ][ priority ] = [];
+			if ( 'undefined' === typeof this.actions[ hook ][ priority ] ) {
 
-		}
+				this.actions[ hook ][ priority ] = [];
 
-		this.actions[ hook ][ priority ].push( user_function );
+			}
 
-	},
+			this.actions[ hook ][ priority ].push({ context: context, callback: user_function });
 
-	add_filter: function( hook, user_function, priority ) {
+		},
 
-		priority = 'undefined' !== typeof priority ? String( priority ) : '10';
-		
-		if ( 'undefined' === typeof this.filters[ hook ] ) {
+		add_filter: function( hook, user_function, priority, context ) {
 
-			this.filters[ hook ] = {};
+			priority = 'undefined' !== typeof priority ? String( priority ) : '10';
+			context = 'undefined' !== typeof context ? context : window;
+			
+			if ( 'undefined' === typeof this.filters[ hook ] ) {
 
-		}
+				this.filters[ hook ] = {};
 
-		if ( 'undefined' === typeof this.filters[ hook ][ priority ] ) {
+			}
 
-			this.filters[ hook ][ priority ] = [];
+			if ( 'undefined' === typeof this.filters[ hook ][ priority ] ) {
 
-		}
+				this.filters[ hook ][ priority ] = [];
 
-		this.filters[ hook ][ priority ].push( user_function );
+			}
 
-	},
+			this.filters[ hook ][ priority ].push({ context: context, callback: user_function });
 
-	remove_action: function( hook, user_function, priority ) {
+		},
 
-		priority = 'undefined' !== typeof priority ? String( priority ) : '10';
+		remove_action: function( hook, user_function, priority ) {
 
-		if ( 'undefined' === typeof this.actions[ hook ] || 'undefined' === typeof this.actions[ hook ][ priority ] || -1 === jQuery.inArray( user_function, this.actions[ hook ][ priority ] ) ) {
+			var removed;
 
-			var removed = false;
+			priority = 'undefined' !== typeof priority ? String( priority ) : '10';
 
-		} else {
+			if ( 'undefined' === typeof this.actions[ hook ] || 'undefined' === typeof this.actions[ hook ][ priority ] ) {
 
-			this.actions[ hook ][ priority ].splice( jQuery.inArray( user_function, this.actions[ hook ][ priority ] ), 1 );
+				removed = false;
 
-			var removed = true;
+			} else {
 
-		}
+				var originalLength = this.actions[ hook ][ priority ].length;
 
-		return removed;
+				this.actions[ hook ][ priority ] = $.map(
+					this.actions[ hook ][ priority ],
+					function( action ) {
 
-	},
+						if ( user_function === action.callback ) {
 
-	remove_filter: function( hook, user_function, priority ) {
+							return null;
 
-		priority = 'undefined' !== typeof priority ? String( priority ) : '10';
+						}
 
-		if ( 'undefined' === typeof this.filters[ hook ] || 'undefined' === typeof this.filters[ hook ][ priority ] || -1 === jQuery.inArray( user_function, this.filters[ hook ][ priority ] ) ) {
+						return action;
 
-			var removed = false;
+					}
+				)
 
-		} else {
+				if ( originalLength > this.actions[ hook ][ priority ].length ) {
 
-			this.filters[ hook ][ priority ].splice( jQuery.inArray( user_function, this.filters[ hook ][ priority ] ), 1 );
+					removed = true;
 
-			var removed = true;
+				} else {
 
-		}
-
-		return removed;
-
-	},
-
-	do_action: function( hook, function_arguments ) {
-
-		var that            = this,
-			priority_sorted = [];
-
-		function_arguments = 'undefined' !== typeof function_arguments ? function_arguments : [];
-
-		if ( 'undefined' === typeof that.actions[ hook ] ) { // this hook is not used
-
-			return;
-
-		}
-
-		jQuery.each( that.actions[ hook ], function( priority, user_functions ) {
-
-			priority_sorted.push( Number( priority ) );
-
-		});
-
-		priority_sorted.sort( function( a, b ) { // sort priority array
-
-			return a - b;
-
-		});
-
-		jQuery.each( priority_sorted, function( index, priority ) {
-
-			jQuery.each( that.actions[ hook ][ priority ], function( index, user_function ) {
-
-				if ( 'function' === typeof user_function ) {
-
-					user_function.apply( null, function_arguments );
-
+					removed = false;
 				}
+
+			}
+
+			return removed;
+
+		},
+
+		remove_filter: function( hook, user_function, priority ) {
+
+			var removed;
+
+			priority = 'undefined' !== typeof priority ? String( priority ) : '10';
+
+			if ( 'undefined' === typeof this.filters[ hook ] || 'undefined' === typeof this.filters[ hook ][ priority ] ) {
+
+				removed = false;
+
+			} else {
+
+				var originalLength = this.filters[ hook ][ priority ].length;
+
+				this.filters[ hook ][ priority ] = $.map(
+					this.filters[ hook ][ priority ],
+					function( filter ) {
+
+						if ( user_function === filter.callback ) {
+
+							return null;
+
+						}
+
+						return filter;
+
+					}
+				)
+
+				if ( originalLength > this.filters[ hook ][ priority ].length ) {
+
+					removed = true;
+
+				} else {
+
+					removed = false;
+				}
+
+			}
+
+			return removed;
+
+		},
+
+		do_action: function( hook, function_arguments ) {
+
+			var that            = this,
+				priority_sorted = [];
+
+			function_arguments = 'undefined' !== typeof function_arguments ? function_arguments : [];
+
+			if ( 'undefined' === typeof that.actions[ hook ] ) { // this hook is not used
+
+				return;
+
+			}
+
+			jQuery.each( that.actions[ hook ], function( priority, user_functions ) {
+
+				priority_sorted.push( Number( priority ) );
 
 			});
 
-		});
+			priority_sorted.sort( function( a, b ) { // sort priority array
 
-	},
+				return a - b;
 
-	apply_filters: function( hook, function_arguments ) {
+			});
 
-		var that            = this,
-			priority_sorted = [];
+			jQuery.each( priority_sorted, function( index, priority ) {
 
-		function_arguments = 'undefined' !== typeof function_arguments ? function_arguments : [];
+				jQuery.each( that.actions[ hook ][ priority ], function( index, action ) {
 
-		if ( 'undefined' === typeof that.filters[ hook ] ) { // this hook is not used
+					if ( 'function' === typeof action.callback ) {
+
+						action.callback.apply( action.context, function_arguments );
+
+					}
+
+				});
+
+			});
+
+		},
+
+		apply_filters: function( hook, function_arguments ) {
+
+			var that            = this,
+				priority_sorted = [];
+
+			function_arguments = 'undefined' !== typeof function_arguments ? function_arguments : [];
+
+			if ( 'undefined' === typeof that.filters[ hook ] ) { // this hook is not used
+
+				return function_arguments[ 0 ];
+
+			}
+
+			jQuery.each( that.filters[ hook ], function( priority, user_functions ) {
+
+				priority_sorted.push( Number( priority ) );
+
+			});
+
+			priority_sorted.sort( function( a, b ) { // sort priority array
+
+				return a - b;
+
+			});
+
+			jQuery.each( priority_sorted, function( index, priority ) {
+
+				jQuery.each( that.filters[ hook ][ priority ], function( index, filter ) {
+
+					if ( 'function' === typeof filter.callback ) {
+
+						filter.callback.apply( filter.context, function_arguments );
+
+					}
+
+				});
+
+			});
 
 			return function_arguments[ 0 ];
 
 		}
 
-		jQuery.each( that.filters[ hook ], function( priority, user_functions ) {
+	};
 
-			priority_sorted.push( Number( priority ) );
-
-		});
-
-		priority_sorted.sort( function( a, b ) { // sort priority array
-
-			return a - b;
-
-		});
-
-		jQuery.each( priority_sorted, function( index, priority ) {
-
-			jQuery.each( that.filters[ hook ][ priority ], function( index, user_function ) {
-
-				if ( 'function' === typeof user_function ) {
-
-					user_function.apply( null, function_arguments );
-
-				}
-
-			});
-
-		});
-
-		return function_arguments[ 0 ];
-
-	}
-
-};
+})( window.jQuery || window.Zepto || window.$ );
